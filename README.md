@@ -4,5 +4,5 @@ Xaml Sync is a tool to synchronises a set of XAML resource directionaries. For e
 This tool is originally used to synchronize localized languages resource for The Hummingbird Project, and Themes definitions for Hummingbird UI Framework.
 
 ##usage
-> xamlsync <masterFile.xaml> <slave1.xaml> <slave2.xaml> ...
-Read entries from masterFile.xaml and add missing entries to slave1.xaml, slave2.xaml and so on.
+> xamlsync <masterFile.xaml> <
+Read entries from masterFile.xaml and add missing entries to every other resource dictionary file in the same folder. 

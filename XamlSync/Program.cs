@@ -106,6 +106,10 @@ namespace XamlSync
                             }
                             previousNode = newNode;
                         }
+                        else
+                        {
+                            previousNode = node;
+                        }
                     }
                 }
             }

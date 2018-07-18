@@ -1,13 +1,26 @@
 # xamlsync
-Xaml Sync is a tool to synchronises a set of XAML resource directionaries. For example: A resource directionary defining English string but another one in French. the tool creates automatically the missing XAML entry to slave files from master files.
+Xaml Sync is a tool used in Hummingbird project to synchroize missing XAML entry for different language resource files.
 
-This tool is originally used to synchronize localized languages resource for The Hummingbird Project, and Themes definitions for Hummingbird UI Framework.
+For example, considering follow XAML code fragments in Resources.en.xaml
+```xml
+<s:String x:Key="Application_Name">Hummingbird</s:String>
+<!-- Description -->
+<s:String x:Key="Application_Description">An integrated test solution</s:String>
+```
 
-##usage
-> xamlsync <masterFile.xaml>
+and the XAML code fragement in Resources.fr.xaml
+```xml
+<s:String x:Key="Application_Name">Hummingbird</s:String>
+```
+After running:
+> `xamlsync Resources.en.xaml`
 
-Read entries from masterFile.xaml and add missing entries to every other resource dictionary file in the same folder. 
+the tool will add following entries to Resources.fr.xaml and other XAML files in the same folder.
+```xml
+<!-- Description -->
+<s:String x:Key="Application_Description">An integrated test solution</s:String> 
+```
+Then it is easy to translate the value of each string.
 
-The XAML file must be an ResourceDictionary other type of XAML files are not supported.
-
-After synchronizing, the target files will lost comments and formats.
+## limitation
+The tools works only with String resource dictionaries for instance.

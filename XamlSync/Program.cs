@@ -62,7 +62,7 @@ namespace XamlSync
         {
             string result = await client.TranslateAsync(originalString, targetLang);
             Console.WriteLine($"Translation: from {originalLang} : {originalString} -> to {targetLang} : {result} ");
-            return result;
+            return result.Replace("\n", "&#13;");
         }
 
         private static void Merge(List<KeyValuePair<string, string>> keyvalues, FileInfo file)

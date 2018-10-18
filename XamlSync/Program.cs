@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using System.Windows;
 using System.Windows.Markup;
 using System.Xml;
@@ -60,9 +61,21 @@ namespace XamlSync
 
         private static async Task<string> Translate(string originalString, string originalLang, string targetLang)
         {
-            string result = await client.TranslateAsync(originalString, targetLang);
-            Console.WriteLine($"Translation: from {originalLang} : {originalString} -> to {targetLang} : {result} ");
-            return result.Replace("\n", "&#13;");
+            string[] lines = originalString.Split('\n');
+            if (lines == null) return string.Empty ;
+            List<string> results = new List<string>();
+            foreach (var line in lines)
+            {
+                if (!string.IsNullOrWhiteSpace(line))
+                {
+                    string result = await client.TranslateAsync(line, targetLang);
+                    results.Add(result);
+                }
+
+            }
+            string finalResult = string.Join("\n", results);
+            Console.WriteLine($"Translation: from {originalLang} : {originalString} -> to {targetLang} : {finalResult} ");
+            return finalResult;
         }
 
         private static void Merge(List<KeyValuePair<string, string>> keyvalues, FileInfo file)
@@ -89,7 +102,18 @@ namespace XamlSync
                             newNode.Attributes.Append(attr);
                             string to = file.Name.Substring(file.Name.IndexOf(".") + 1, file.Name.LastIndexOf(".") - file.Name.IndexOf(".") -1);
                             string translation = Translate(keyvalue.Value, "en", to).Result;
-                            newNode.InnerText = translation;
+                            if (translation.Contains("\n"))
+                            {
+                                var cdata = xmlDoc.CreateCDataSection(translation);
+                                newNode.AppendChild(cdata);
+                                var attribute = xmlDoc.CreateAttribute("xml:space");
+                                attribute.Value = "preserve";
+                                newNode.Attributes.Append(attribute);
+                            }
+                            else
+                            {
+                                newNode.InnerText = translation;
+                            }
                             if (previousNode != null)
                             {
                                 xmlDoc.LastChild.InsertAfter(newNode, previousNode);

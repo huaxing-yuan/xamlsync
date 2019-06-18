@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -20,6 +21,8 @@ namespace XamlSync
             FileInfo fi = new FileInfo(sourceFile);
             XmlDocument xmlDoc = new XmlDocument();
             List<KeyValuePair<string, string>> keyvalues = new List<KeyValuePair<string, string>>();
+
+            ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
 
 
 
@@ -57,7 +60,14 @@ namespace XamlSync
         }
 
 
-        static TranslatorService.TranslatorServiceClient client = new TranslatorService.TranslatorServiceClient(ConfigurationManager.AppSettings["API_KEY"]);
+        //static TranslatorService.TranslatorClient client = new TranslatorService.TranslatorClient(ConfigurationManager.AppSettings["API_KEY"], "en-US");
+        static CognitiveServices.Translator.TranslateClient client =
+            new CognitiveServices.Translator.TranslateClient(
+                new CognitiveServices.Translator.Configuration.CognitiveServicesConfig()
+                {
+                    SubscriptionKey = ConfigurationManager.AppSettings["API_KEY"],
+                });
+        
 
         private static async Task<string> Translate(string originalString, string originalLang, string targetLang)
         {
@@ -68,8 +78,12 @@ namespace XamlSync
             {
                 if (!string.IsNullOrWhiteSpace(line))
                 {
-                    string result = await client.TranslateAsync(line, targetLang);
-                    results.Add(result);
+                    var response = client.Translate(new CognitiveServices.Translator.Translate.RequestContent(line), new CognitiveServices.Translator.Translate.RequestParameter()
+                    {
+                        From = "en-US",
+                        To = new string[] { targetLang },
+                    });
+                    results.Add(response[0].Translations[0].Text);
                 }
 
             }

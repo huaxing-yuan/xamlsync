@@ -25,11 +25,10 @@ The tool will add following entries to **Resources.fr.xaml** and other XAML file
 <!-- Description -->
 <s:String x:Key="Application_Description">Une solution de test intégrée</s:String> 
 ```
-Then it is easy to check the translation result manually by a humain.
+Then it is easy to check the translation result manually by a human.
 
 If the entry has already exsit, the tool will keep the value without any changes.
 
 ## limitation
-The tool works only with String resource dictionaries.
-The source resource must be English.
-Machine translation has their limit, the translation result must be checked by a humain ;)
+The tool works only with String resource dictionaries, and the source resource must be English.
+Machine translation has its limit, Translation result should be reviewed by a human ;)
